@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/User");
+const User = require("../models/user");
 const auth = require("../middleware/auth");
 
 // Create a new user
@@ -42,7 +42,7 @@ router.get("/users/me", auth, async (req, res) => {
 });
 
 // Log user out of the application
-router.post("/users/me/logout", auth, async (req, res) => {
+router.post("/users/logout", auth, async (req, res) => {
   try {
     req.user.tokens = req.user.tokens.filter((token) => {
       return token.token != req.token;
@@ -55,7 +55,7 @@ router.post("/users/me/logout", auth, async (req, res) => {
 });
 
 // Log user out of all devices
-router.post("/users/me/logoutall", auth, async (req, res) => {
+router.post("/users/logoutall", auth, async (req, res) => {
   try {
     req.user.tokens.splice(0, req.user.tokens.length);
     await req.user.save();

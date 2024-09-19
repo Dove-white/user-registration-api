@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "env-cmd -f ./.env nodemon src/app.js"
+    "dev": "env-cmd -f ./.env nodemon src/app.js"
   },
   "repository": "https://github.com/Dove-white/user-registration-api.git",
   "author": "Dove-white <dlsdove@gmail.com>",

@@ -15,6 +15,7 @@ const useSchema = new mongoose.Schema({
     required: true,
     unique: true,
     lowercase: true,
+    trim: true,
     validate(value) {
       if (!validator.isEmail(value)) {
         throw new Error("Email is invalid");
@@ -25,6 +26,7 @@ const useSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 7,
+    trim: true,
     validate(value) {
       if (value.toLowerCase().includes("password")) {
         throw new Error('Password cannot contain "password"');
@@ -44,6 +46,7 @@ const useSchema = new mongoose.Schema({
 // Hash the password before saving the user model
 useSchema.pre("save", async function (next) {
   const user = this;
+
   if (user.isModified("password")) {
     user.password = await bcrypt.hash(user.password, 8);
   }
@@ -54,6 +57,7 @@ useSchema.pre("save", async function (next) {
 useSchema.methods.generateAuthToken = async function () {
   const user = this;
   const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_KEY);
+
   user.tokens = user.tokens.concat({ token });
   await user.save();
   return token;
@@ -62,10 +66,13 @@ useSchema.methods.generateAuthToken = async function () {
 // Search for a user by email and password.
 useSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });
+
   if (!user) {
     throw new Error("Invalid login credentials");
   }
+
   const isMatch = await bcrypt.compare(password, user.password);
+
   if (!isMatch) {
     throw new Error("Invalid login credentials");
   }
