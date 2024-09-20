@@ -49,6 +49,7 @@ useSchema.pre("save", async function (next) {
   if (user.isModified("password")) {
     user.password = await bcrypt.hash(user.password, 8);
   }
+  
   next();
 });
 
@@ -59,6 +60,7 @@ useSchema.methods.generateAuthToken = async function () {
 
   user.tokens = user.tokens.concat({ token });
   await user.save();
+
   return token;
 };
 
@@ -75,6 +77,7 @@ useSchema.statics.findByCredentials = async (email, password) => {
   if (!isMatch) {
     throw new Error("Invalid login credentials");
   }
+
   return user;
 };
 
