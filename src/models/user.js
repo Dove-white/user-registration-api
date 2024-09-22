@@ -16,7 +16,7 @@ const useSchema = new mongoose.Schema({
     lowercase: true,
     trim: true,
     validate(value) {
-      if (!validator.isEmail(value)) {
+      if (!validator.isEmail(value) || !value?.endsWith("@dove.com")) {
         throw new Error("Email is invalid");
       }
     },
@@ -75,7 +75,7 @@ useSchema.statics.findByCredentials = async (email, password) => {
   const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
-    throw new Error("Invalid login credentials");
+    throw new Error("Password is incorrect");
   }
 
   return user;

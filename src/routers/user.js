@@ -10,9 +10,15 @@ router.post("/users", async (req, res) => {
     await user.save();
 
     const token = await user.generateAuthToken();
-    res.status(201).send({ user, token });
+    const message = "User created successfully";
+    res.status(201).send({ message, token });
   } catch (error) {
-    console.log(error);
+    if (error?.message?.includes("Email is invalid")) {
+      error.errorMsg = "Email is invalid";
+    }
+    if (error?.errorResponse?.errmsg?.includes("duplicate")) {
+      error.errorMsg = "Email already exists";
+    }
     res.status(400).send(error);
   }
 });
@@ -25,8 +31,10 @@ router.post("/users/login", async (req, res) => {
     const user = await User.findByCredentials(email, password);
     const token = await user.generateAuthToken();
 
-    res.send({ user, token });
+    const message = "Login successfully";
+    res.status(201).send({ message, token });
   } catch (error) {
+    error.errorMsg = error?.message;
     res.status(400).send(error);
   }
 });
@@ -51,11 +59,11 @@ router.post("/users/logout", auth, async (req, res) => {
 });
 
 // Log user out of all devices
-router.post("/users/logoutall", auth, async (req, res) => {
+router.post("/users/logoutAll", auth, async (req, res) => {
   try {
     req.user.tokens.splice(0, req.user.tokens.length);
     await req.user.save();
-    
+
     res.send();
   } catch (error) {
     res.status(500).send(error);
