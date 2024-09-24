@@ -2,7 +2,13 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
 const auth = async (req, res, next) => {
-  const token = req.header("Authorization").replace("Bearer ", "");
+  const token = req.header("Authorization")?.replace("Bearer ", "");
+  if (!token) {
+    return res
+      .status(401)
+      .send({ errorMsg: "Not authorized to access this resource" });
+  }
+
   const data = jwt.verify(token, process.env.JWT_KEY);
 
   try {
@@ -14,7 +20,9 @@ const auth = async (req, res, next) => {
     req.token = token;
     next();
   } catch (error) {
-    res.status(401).send({ errorMsg: "Not authorized to access this resource" });
+    res
+      .status(401)
+      .send({ errorMsg: "Not authorized to access this resource" });
   }
 };
 
