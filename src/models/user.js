@@ -2,6 +2,9 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const {
+  generateBackgroundColor,
+} = require("../custom modules/background_color");
 
 const useSchema = new mongoose.Schema({
   name: {
@@ -31,6 +34,10 @@ const useSchema = new mongoose.Schema({
         throw new Error('Password cannot contain "password"');
       }
     },
+  },
+  background_color: {
+    type: String,
+    default: generateBackgroundColor(),
   },
   tokens: [
     {
