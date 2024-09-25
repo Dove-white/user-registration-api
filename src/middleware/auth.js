@@ -6,7 +6,7 @@ const auth = async (req, res, next) => {
   if (!token) {
     return res
       .status(401)
-      .send({ errorMsg: "Not authorized to access this resource" });
+      .send({ errorMsg: "Not authorized" });
   }
 
   const data = jwt.verify(token, process.env.JWT_KEY);
@@ -22,7 +22,7 @@ const auth = async (req, res, next) => {
   } catch (error) {
     res
       .status(401)
-      .send({ errorMsg: "Not authorized to access this resource" });
+      .send({ errorMsg: "Not authorized" });
   }
 };
 

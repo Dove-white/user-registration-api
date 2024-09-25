@@ -15,7 +15,7 @@ router.post("/users", async (req, res) => {
     await user.save();
 
     const token = await user.generateAuthToken();
-    const message = "User created successfully";
+    const message = "Account created";
     res.status(201).send({ message, token });
   } catch (error) {
     if (error?.message?.includes("Email is invalid")) {
@@ -75,7 +75,7 @@ router.patch("/users/me", auth, async (req, res) => {
       if (newPassword !== confirmPassword) {
         return res
           .status(400)
-          .send({ error: "Confirm passwords do not match." });
+          .send({ error: "Confirm password do not match." });
       }
 
       user.password = await bcrypt.hash(newPassword, 8);
@@ -84,7 +84,7 @@ router.patch("/users/me", auth, async (req, res) => {
     await user.save();
 
     if (!user) {
-      user.message = "Password updated successfully";
+      user.message = "Password updated";
     }
 
     res.send(user);
