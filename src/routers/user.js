@@ -47,6 +47,7 @@ router.post("/users/login", async (req, res) => {
 // Edit user details (name and/or password)
 router.patch("/users/me", auth, async (req, res) => {
   const { name, oldPassword, newPassword, confirmPassword } = req.body;
+  console.log("name", name);
 
   if (!name && !oldPassword) {
     return res.status(400).send({ errorMsg: "Please provide valid updates." });
@@ -67,7 +68,7 @@ router.patch("/users/me", auth, async (req, res) => {
           .send({ errorMsg: "All password fields are required." });
       }
 
-      const isMatch = await bcrypt?.compare(oldPassword, user.password);
+      const isMatch = await bcrypt.compare(oldPassword, user.password);
       if (!isMatch) {
         return res.status(400).send({ errorMsg: "Incorrect old password." });
       }
@@ -75,19 +76,17 @@ router.patch("/users/me", auth, async (req, res) => {
       if (newPassword !== confirmPassword) {
         return res
           .status(400)
-          .send({ error: "Confirm password do not match." });
+          .send({ errorMsg: "Confirm password do not match." });
       }
 
-      user.password = await bcrypt.hash(newPassword, 8);
+      user.password = newPassword;
     }
 
     await user.save();
 
-    if (!user) {
-      user.message = "Password updated";
-    }
+    const message = name?.length > 0 ? "" : "Password updated";
 
-    res.send(user);
+    res.send({ user, message });
   } catch (error) {
     res.status(400).send(error);
   }
@@ -105,7 +104,8 @@ router.get("/users", auth, async (req, res) => {
 
 // View logged in user profile
 router.get("/users/me", auth, async (req, res) => {
-  res.send(req.user);
+  const user = req.user;
+  res.send({ user });
 });
 
 // Log user out of the application
