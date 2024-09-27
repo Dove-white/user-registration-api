@@ -47,7 +47,6 @@ router.post("/users/login", async (req, res) => {
 // Edit user details (name and/or password)
 router.patch("/users/me", auth, async (req, res) => {
   const { name, oldPassword, newPassword, confirmPassword } = req.body;
-  console.log("name", name);
 
   if (!name && !oldPassword) {
     return res.status(400).send({ errorMsg: "Please provide valid updates." });
