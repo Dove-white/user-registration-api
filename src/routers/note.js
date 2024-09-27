@@ -75,7 +75,8 @@ router.post("/notes/day", auth, async (req, res) => {
     const notes = await Note.find({
       owner: req.user._id,
       createdAt: { $gte: startOfDay, $lt: endOfDay },
-    });
+    }).sort({ createdAt: -1 });
+
     res.send(notes);
   } catch (error) {
     res.status(500).send({ errorMsg: error.message || "Server Error" });
@@ -106,7 +107,8 @@ router.post("/notes/week", auth, async (req, res) => {
     const notes = await Note.find({
       owner: req.user._id,
       createdAt: { $gte: firstDayOfWeek, $lt: lastDayOfWeek },
-    });
+    }).sort({ createdAt: -1 });
+
     res.send(notes);
   } catch (error) {
     res.status(500).send({ errorMsg: error.message || "Server Error" });
@@ -138,7 +140,8 @@ router.post("/notes/month", auth, async (req, res) => {
     const notes = await Note.find({
       owner: req.user._id,
       createdAt: { $gte: startOfMonth, $lt: endOfMonth },
-    });
+    }).sort({ createdAt: -1 });
+
     res.send(notes);
   } catch (error) {
     res.status(500).send({ errorMsg: error.message || "Server Error" });
@@ -146,7 +149,7 @@ router.post("/notes/month", auth, async (req, res) => {
 });
 
 // Find Notes by Year and Month
-router.post("/notes/findByMonth", auth, async (req, res) => {
+router.post("/notes/findNoteByYearAndMonth", auth, async (req, res) => {
   const { year, month } = req.body;
 
   if (!year || !month) {
@@ -169,7 +172,7 @@ router.post("/notes/findByMonth", auth, async (req, res) => {
     const notes = await Note.find({
       owner: req.user._id,
       createdAt: { $gte: startOfMonth, $lt: endOfMonth },
-    });
+    }).sort({ createdAt: -1 });
 
     res.send(notes);
   } catch (e) {
