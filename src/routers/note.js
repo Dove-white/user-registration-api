@@ -209,7 +209,12 @@ router.post("/notes/availableMonths", auth, async (req, res) => {
       ),
     }));
 
-    res.send(availableMonths);
+    const availableMonthsWithIndex = availableMonths?.map((item, index) => ({
+      ...item,
+      indexDate: index, // Add the indexDate field starting from 0
+    }));
+
+    res.send(availableMonthsWithIndex);
   } catch (error) {
     res.status(500).send({ errorMsg: "Unable to retrieve available months." });
   }
@@ -218,7 +223,7 @@ router.post("/notes/availableMonths", auth, async (req, res) => {
 // Update a note by its ID
 router.patch("/notes/:id", auth, async (req, res) => {
   const updates = Object.keys(req.body);
-  const allowedUpdates = ["title", "body"];
+  const allowedUpdates = ["title", "body","_id"];
   const isValidOperation = updates.every((update) =>
     allowedUpdates.includes(update)
   );
