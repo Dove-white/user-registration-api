@@ -220,10 +220,20 @@ router.post("/notes/availableMonths", auth, async (req, res) => {
   }
 });
 
+// Find all starred notes
+router.post("/notes/starred", auth, async (req, res) => {
+  try {
+    const notes = await Note.find({ starred: true, owner: req.user._id });
+    res.send(notes);
+  } catch (error) {
+    res.status(500).send({ errorMsg: error.message || "Server Error" });
+  }
+});
+
 // Update a note by its ID
 router.patch("/notes/:id", auth, async (req, res) => {
   const updates = Object.keys(req.body);
-  const allowedUpdates = ["title", "body","_id"];
+  const allowedUpdates = ["title", "body", "_id", "starred"];
   const isValidOperation = updates.every((update) =>
     allowedUpdates.includes(update)
   );
@@ -252,6 +262,10 @@ router.patch("/notes/:id", auth, async (req, res) => {
       if (req.body.body.trim() !== "") {
         note.body = req.body.body;
       }
+    }
+
+    if (req.body.starred !== undefined) {
+      note.starred = req.body.starred;
     }
 
     await note.save();

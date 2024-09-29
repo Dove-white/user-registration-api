@@ -30,6 +30,10 @@ const noteSchema = new mongoose.Schema(
       type: String,
       default: textColor,
     },
+    starred: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
